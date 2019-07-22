@@ -17,17 +17,25 @@ namespace McCommandsFramework {
 
         public float Scaler = 1;
 
+        
+
         public static VoxelGeometry Parse(string filepath) {
             var src = File.ReadAllLines(filepath);
             var res = new VoxelGeometry();
 
             string use = DefaultBlock; // if block is not specified, use deafult block
+            bool mirrorX = false;
+            bool mirrorY = false;
+            bool mirrorZ = false;
+
             foreach (var line in src) {
                 if (!string.IsNullOrWhiteSpace(line)) {
                     if (line.StartsWith("use ")) {
                         use = line.Substring(4);
                         res.Voxels.Add(use, new List<Vec3>());
                         continue;
+                    } else if (line.StartsWith("mirror ")) {
+
                     }
 
                     var charvalues = line.Split(' ');

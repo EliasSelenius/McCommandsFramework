@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JsonParser">
+      <HintPath>..\..\JsonParser\JsonParser\bin\Debug\JsonParser.dll</HintPath>
+    </Reference>
     <Reference Include="Nums">
       <HintPath>..\..\Nums\bin\Debug\Nums.dll</HintPath>
     </Reference>

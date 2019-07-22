@@ -22,6 +22,7 @@ namespace McCommandsFramework {
         private readonly Dictionary<string, McNamespace> namespaces = new Dictionary<string, McNamespace>();
 
 
+
         public McDatapack(string save, string name) {
             Path = GetDatapacksDirectoryPath(save) + $"/{name}";
 

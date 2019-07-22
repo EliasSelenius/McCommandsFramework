@@ -15,7 +15,6 @@ namespace McCommandsFramework {
 
         private readonly Dictionary<string, McFunction> functions = new Dictionary<string, McFunction>();
 
-        
 
         public McNamespace(string path) {
             Path = path;
