@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "McCommandsFramework", "McCommandsFramework\McCommandsFramework.csproj", "{B36B7627-76C0-42FA-8AD6-858A887A4C80}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelEditor", "VoxelEditor\VoxelEditor.csproj", "{C819262A-1192-4225-9DE2-EBD023098C1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B36B7627-76C0-42FA-8AD6-858A887A4C80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B36B7627-76C0-42FA-8AD6-858A887A4C80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B36B7627-76C0-42FA-8AD6-858A887A4C80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C819262A-1192-4225-9DE2-EBD023098C1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C819262A-1192-4225-9DE2-EBD023098C1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C819262A-1192-4225-9DE2-EBD023098C1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C819262A-1192-4225-9DE2-EBD023098C1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
