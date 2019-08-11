@@ -75,6 +75,9 @@
     <Folder Include="FIles\Templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="FIles\BigBoat.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="FIles\Boat.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

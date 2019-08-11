@@ -8,6 +8,8 @@ using System.IO;
 
 using Nums.Vectors;
 
+using static System.Math;
+
 namespace McCommandsFramework {
     public class VoxelGeometry {
 
@@ -20,6 +22,22 @@ namespace McCommandsFramework {
         
 
         public static VoxelGeometry Parse(string filepath) {
+
+            bool _parseVec(string s, out float[] o) {
+                var strs = s.Split(' ');
+                o = new float[strs.Length];
+                for (int i = 0; i < strs.Length; i++) {
+                    if (float.TryParse(strs[i], out float x)) {
+                        o[i] = x;
+                    } else {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            
+
+
             var src = File.ReadAllLines(filepath);
             var res = new VoxelGeometry();
 
@@ -28,26 +46,75 @@ namespace McCommandsFramework {
             bool mirrorY = false;
             bool mirrorZ = false;
 
-            foreach (var line in src) {
+            foreach (var l in src) {
+                var line = l.Trim();
                 if (!string.IsNullOrWhiteSpace(line)) {
                     if (line.StartsWith("use ")) {
                         use = line.Substring(4);
                         res.Voxels.Add(use, new List<Vec3>());
                         continue;
                     } else if (line.StartsWith("mirror ")) {
+                        var axis = line.Substring(6);
+                        if(axis.Contains("x")) {
+                            mirrorX = true;
+                        } else if (axis.Contains("y")) {
+                            mirrorY = true;
+                        } else if (axis.Contains("z")) {
+                            mirrorZ = true;
+                        } else if (axis.Contains("none")) {
+                            mirrorX = mirrorY = mirrorZ = false;
+                        }
+                        continue;
+                    } else if (line.StartsWith("//")) {
+                        continue;
+                    } else if (line.StartsWith("fill ")) {
+                        var valstr = line.Substring(5);
+                        if (_parseVec(valstr, out float[] array)) {
+                            var v1 = new Vec3(array[0], array[1], array[2]);
+                            var v2 = new Vec3(array[3], array[4], array[5]);
 
-                    }
+                            var min = new Vec3(Min(v1.x, v2.x), Min(v1.y, v2.y), Min(v1.z, v2.z));
+                            var max = new Vec3(Max(v1.x, v2.x), Max(v1.y, v2.y), Max(v1.z, v2.z));
 
-                    var charvalues = line.Split(' ');
-                    if (float.TryParse(charvalues[0], out float x) && float.TryParse(charvalues[1], out float y) && float.TryParse(charvalues[2], out float z)) {
-                        res.Voxels[use].Add(new Vec3(x, y, z));
+                            for (float x = min.x; x <= max.x; x++) {
+                                for (float y = min.y; y <= max.y; y++) {
+                                    for (float z = min.z; z <= max.z; z++) {
+                                        _addVoxel(x, y, z);
+                                    }
+                                }
+                            }
+
+                        } else {
+                            Console.WriteLine("Voxel Parsing error: " + line);
+                        }
                     } else {
-                        // parsing error...
-                    }
+                        var charvalues = line.Split(' ');
+                        if (float.TryParse(charvalues[0], out float x) && float.TryParse(charvalues[1], out float y) && float.TryParse(charvalues[2], out float z)) {
+                            _addVoxel(x, y, z);
 
+                        } else {
+                            Console.WriteLine("Voxel Parsing error: " + line);
+                        }
+                    }
                 }
             }
 
+            void _addVoxel(float x, float y, float z) {
+                // add voxel:
+                res.Voxels[use].Add(new Vec3(x, y, z));
+                // add mirrors:
+                if (mirrorX && x != 0) {
+                    res.Voxels[use].Add(new Vec3(-x, y, z));
+                }
+                if (mirrorY && y != 0) {
+                    res.Voxels[use].Add(new Vec3(x, -y, z));
+                }
+                if (mirrorZ && z != 0) {
+                    res.Voxels[use].Add(new Vec3(x, y, -z));
+                }
+            }
+
+            Console.WriteLine("Voxel Parsing done with " + filepath);
             return res;
         }
 

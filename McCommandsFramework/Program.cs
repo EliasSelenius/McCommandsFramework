@@ -25,7 +25,11 @@ namespace McCommandsFramework {
             b.Scaler = 0.625f;
             b.RegisterAt(dp, "boat");
 
+            var b2 = VoxelGeometry.Parse("Files/BigBoat.txt");
+            b2.Scaler = 0.625f;
+            b2.RegisterAt(dp, "bigboat");
 
+            Console.WriteLine("Done. press any key");
             Console.Read();
         }
 
