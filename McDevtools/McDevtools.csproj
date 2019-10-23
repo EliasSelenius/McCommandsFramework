@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B36B7627-76C0-42FA-8AD6-858A887A4C80}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>McCommandsFramework</RootNamespace>
-    <AssemblyName>McCommandsFramework</AssemblyName>
+    <RootNamespace>McDevtools</RootNamespace>
+    <AssemblyName>McDevtools</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -41,6 +41,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -52,6 +54,10 @@
     <Compile Include="McDatapack.cs" />
     <Compile Include="McFunction.cs" />
     <Compile Include="McTags.cs" />
+    <Compile Include="NBT\Compound.cs" />
+    <Compile Include="NBT\Decoder.cs" />
+    <Compile Include="NBT\NamedTag.cs" />
+    <Compile Include="NBT\TagType.cs" />
     <Compile Include="VoxelGeometry.cs" />
     <Compile Include="McNamespace.cs" />
     <Compile Include="Program.cs" />
@@ -64,6 +70,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="FIles\test.nbt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="FIles\test\test">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Templates.resx">

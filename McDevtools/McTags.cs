@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using JsonParser;
 
-namespace McCommandsFramework {
+namespace McDevtools {
     public class McTags {
 
         private readonly Dictionary<string, JObject> funcs = new Dictionary<string, JObject>();

@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.IO;
-
-using Nums.Vectors;
-
 using static System.Math;
 
-namespace McCommandsFramework {
+using Nums.Vectors;
+using McDevtools.NBT;
+
+namespace McDevtools {
     public class VoxelGeometry {
 
         public const string DefaultBlock = "minecraft:stone";
@@ -19,7 +18,31 @@ namespace McCommandsFramework {
 
         public float Scaler = 1;
 
-        
+        public void AddVoxel(string block, Vec3 pos) {
+            if (!Voxels.ContainsKey(block)) {
+                Voxels.Add(block, new List<Vec3>());
+            }
+            Voxels[block].Add(pos);
+        }
+
+        public static VoxelGeometry FromStructureNBT(NamedTag nbt) {
+            var res = new VoxelGeometry();
+
+            var c = (nbt.Payload as Compound);
+            var pallete = c["pallete"];
+            var blocks = c["blocks"] as List<object>;
+            foreach (var item in blocks) {
+                var i = item as Compound;
+                var nbtpos = i["pos"] as List<object>;
+                var pos = new Vec3((int)nbtpos[0], (int)nbtpos[1], (int)nbtpos[2]);
+                var state = i["state"] as int?;
+                if (state == 0) {
+                    res.AddVoxel(DefaultBlock, pos);
+                }
+            }
+
+            return res;
+        }
 
         public static VoxelGeometry Parse(string filepath) {
 

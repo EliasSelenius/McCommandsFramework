@@ -24,7 +24,7 @@ namespace VoxelEditor {
         }
 
         public void Render() {
-            Game.Renderer.ShaderProgram.SetVec3("model", );
+            //Game.Renderer.ShaderProgram.SetVec3("model", );
         }
 
 

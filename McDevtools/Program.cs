@@ -9,13 +9,17 @@ using System.IO;
 using Nums;
 using Nums.Vectors;
 
-namespace McCommandsFramework {
+namespace McDevtools {
     class Program {
 
 
         static void Main(string[] args) {
 
             var dp = new McDatapack("Void", "testautopack");
+
+            var nbttest = VoxelGeometry.FromStructureNBT(NBT.Decoder.Decode("FIles/test.nbt"));
+            nbttest.Scaler = 0.625f;
+            nbttest.RegisterAt(dp, "nbttest");
 
             var g = VoxelGeometry.Parse("Files/Cube.txt");
             g.Scaler = 0.625f;
@@ -29,6 +33,7 @@ namespace McCommandsFramework {
             b2.Scaler = 0.625f;
             b2.RegisterAt(dp, "bigboat");
 
+            
             Console.WriteLine("Done. press any key");
             Console.Read();
         }

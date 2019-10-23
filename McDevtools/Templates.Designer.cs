@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace McCommandsFramework {
+namespace McDevtools {
     using System;
     
     

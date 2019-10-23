@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using System.IO;
 
-namespace McCommandsFramework {
+namespace McDevtools {
     public class McNamespace {
 
         private readonly string Path;
