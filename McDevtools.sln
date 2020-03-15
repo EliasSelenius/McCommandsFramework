@@ -1,11 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.271
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "McDevtools", "McDevtools\McDevtools.csproj", "{B36B7627-76C0-42FA-8AD6-858A887A4C80}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "McDevtoolsss", "McDevtools\McDevtoolsss.csproj", "{B36B7627-76C0-42FA-8AD6-858A887A4C80}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelEditor", "VoxelEditor\VoxelEditor.csproj", "{C819262A-1192-4225-9DE2-EBD023098C1B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "McDevtools", "McDevtools\McDevtools.csproj", "{F3D40E80-B4E9-49F4-ACEE-C760CA312A8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emdl", "Emdl\Emdl.csproj", "{9B40A66D-9C74-4325-8121-41C8EEE29D85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emdlcli", "Emdlcli\Emdlcli.csproj", "{0739AEA9-B58A-433D-A87F-F9538BA6645D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +27,18 @@ Global
 		{C819262A-1192-4225-9DE2-EBD023098C1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C819262A-1192-4225-9DE2-EBD023098C1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C819262A-1192-4225-9DE2-EBD023098C1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3D40E80-B4E9-49F4-ACEE-C760CA312A8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3D40E80-B4E9-49F4-ACEE-C760CA312A8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3D40E80-B4E9-49F4-ACEE-C760CA312A8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3D40E80-B4E9-49F4-ACEE-C760CA312A8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B40A66D-9C74-4325-8121-41C8EEE29D85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B40A66D-9C74-4325-8121-41C8EEE29D85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B40A66D-9C74-4325-8121-41C8EEE29D85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B40A66D-9C74-4325-8121-41C8EEE29D85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0739AEA9-B58A-433D-A87F-F9538BA6645D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0739AEA9-B58A-433D-A87F-F9538BA6645D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0739AEA9-B58A-433D-A87F-F9538BA6645D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0739AEA9-B58A-433D-A87F-F9538BA6645D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

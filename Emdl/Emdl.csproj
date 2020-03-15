@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\McDevtools\McDevtools.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Pgen">
+      <HintPath>..\..\Pgen\Pgen\bin\Debug\netstandard2.0\Pgen.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

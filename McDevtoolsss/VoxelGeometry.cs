@@ -6,23 +6,21 @@ using System.Threading.Tasks;
 using System.IO;
 using static System.Math;
 
-using Nums;
-//using static Nums.math;
-
-using McDevtools.Nbt;
+using Nums.Vectors;
+using McDevtools.NBT;
 
 namespace McDevtools {
     public class VoxelGeometry {
 
         public const string DefaultBlock = "minecraft:stone";
 
-        public Dictionary<string, List<vec3>> Voxels = new Dictionary<string, List<vec3>>();
+        public Dictionary<string, List<Vec3>> Voxels = new Dictionary<string, List<Vec3>>();
 
         public float Scaler = 1;
 
-        public void AddVoxel(string block, vec3 pos) {
+        public void AddVoxel(string block, Vec3 pos) {
             if (!Voxels.ContainsKey(block)) {
-                Voxels.Add(block, new List<vec3>());
+                Voxels.Add(block, new List<Vec3>());
             }
             Voxels[block].Add(pos);
         }
@@ -36,7 +34,7 @@ namespace McDevtools {
             foreach (var item in blocks) {
                 var i = item as Compound;
                 var nbtpos = i["pos"] as List<object>;
-                var pos = new vec3((int)nbtpos[0], (int)nbtpos[1], (int)nbtpos[2]);
+                var pos = new Vec3((int)nbtpos[0], (int)nbtpos[1], (int)nbtpos[2]);
                 var state = i["state"] as int?;
                 if (state == 0) {
                     res.AddVoxel(DefaultBlock, pos);
@@ -46,10 +44,10 @@ namespace McDevtools {
             return res;
         }
 
-        public void Offset(vec3 offset) => ForeachVoxel((s, i, p) => Voxels[s][i] = p + offset);
-        public void Scale(vec3 scaleFactor) => ForeachVoxel((s, i, p) => Voxels[s][i] = p * scaleFactor);
+        public void Offset(Vec3 offset) => ForeachVoxel((s, i, p) => Voxels[s][i] = p + offset);
+        public void Scale(Vec3 scaleFactor) => ForeachVoxel((s, i, p) => Voxels[s][i] = p * scaleFactor);
 
-        public void ForeachVoxel(Action<string, int, vec3> action) {
+        public void ForeachVoxel(Action<string, int, Vec3> action) {
             for (int i = 0; i < Voxels.Count; i++) {
                 var block = Voxels.ElementAt(i);
                 for (int j = 0; j < block.Value.Count; j++) {
@@ -96,7 +94,7 @@ namespace McDevtools {
                 if (!string.IsNullOrWhiteSpace(line)) {
                     if (line.StartsWith("use ")) {
                         use = line.Substring(4);
-                        res.Voxels.Add(use, new List<vec3>());
+                        res.Voxels.Add(use, new List<Vec3>());
                         continue;
                     } else if (line.StartsWith("mirror ")) {
                         var axis = line.Substring(6);
@@ -115,11 +113,11 @@ namespace McDevtools {
                     } else if (line.StartsWith("fill ")) {
                         var valstr = line.Substring(5);
                         if (_parseVec(valstr, out float[] array)) {
-                            var v1 = new vec3(array[0], array[1], array[2]);
-                            var v2 = new vec3(array[3], array[4], array[5]);
+                            var v1 = new Vec3(array[0], array[1], array[2]);
+                            var v2 = new Vec3(array[3], array[4], array[5]);
 
-                            var min = new vec3(Min(v1.x, v2.x), Min(v1.y, v2.y), Min(v1.z, v2.z));
-                            var max = new vec3(Max(v1.x, v2.x), Max(v1.y, v2.y), Max(v1.z, v2.z));
+                            var min = new Vec3(Min(v1.x, v2.x), Min(v1.y, v2.y), Min(v1.z, v2.z));
+                            var max = new Vec3(Max(v1.x, v2.x), Max(v1.y, v2.y), Max(v1.z, v2.z));
 
                             for (float x = min.x; x <= max.x; x++) {
                                 for (float y = min.y; y <= max.y; y++) {
@@ -146,16 +144,16 @@ namespace McDevtools {
 
             void _addVoxel(float x, float y, float z) {
                 // add voxel:
-                res.Voxels[use].Add(new vec3(x, y, z));
+                res.Voxels[use].Add(new Vec3(x, y, z));
                 // add mirrors:
                 if (mirrorX && x != 0) {
-                    res.Voxels[use].Add(new vec3(-x, y, z));
+                    res.Voxels[use].Add(new Vec3(-x, y, z));
                 }
                 if (mirrorY && y != 0) {
-                    res.Voxels[use].Add(new vec3(x, -y, z));
+                    res.Voxels[use].Add(new Vec3(x, -y, z));
                 }
                 if (mirrorZ && z != 0) {
-                    res.Voxels[use].Add(new vec3(x, y, -z));
+                    res.Voxels[use].Add(new Vec3(x, y, -z));
                 }
             }
 

@@ -17,9 +17,11 @@ namespace McDevtools {
 
             var dp = new McDatapack("Void", "testautopack");
 
-            var nbttest = VoxelGeometry.FromStructureNBT(NBT.Decoder.Decode("FIles/test.nbt"));
+            var front = VoxelGeometry.FromStructureNBT(NBT.Decoder.Decode("FIles/bigtest1.nbt"));
+            front.Offset(new Vec3(0, 0, 32));
+            var nbttest = VoxelGeometry.FromStructureNBT(NBT.Decoder.Decode("FIles/bigtest0.nbt")).Merge(front);
             nbttest.Scaler = 0.625f;
-            nbttest.RegisterAt(dp, "nbttest");
+            nbttest.RegisterAt(dp, "bignbttest");
 
             var g = VoxelGeometry.Parse("Files/Cube.txt");
             g.Scaler = 0.625f;

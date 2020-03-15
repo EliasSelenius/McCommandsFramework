@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 
-namespace McDevtools.Nbt {
+namespace McDevtools.NBT {
     public class NamedTag {
         public readonly string Name;
         public TagType Type { get; private set; }

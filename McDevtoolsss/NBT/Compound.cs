@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace McDevtools.Nbt {
+namespace McDevtools.NBT {
     public class Compound : IDictionary<string, object> {
 
         private readonly List<NamedTag> namedTags = new List<NamedTag>();

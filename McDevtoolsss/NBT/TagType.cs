@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace McDevtools.Nbt {
+namespace McDevtools.NBT {
     public enum TagType {
         End = 0,
         Byte = 1,

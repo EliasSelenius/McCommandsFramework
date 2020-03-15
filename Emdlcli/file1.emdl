@@ -1,0 +1,23 @@
+﻿
+
+namespace emdl-functions-test {
+	
+	function printhelloworld {
+		/say hello world again
+	
+		/function test:call-me
+	}
+
+	function call-me {
+		/say am callEDDA!!^&*
+	}
+
+}
+
+namespace another_test {
+	function hello-world {
+		/say Hello World
+		
+		
+	}
+}

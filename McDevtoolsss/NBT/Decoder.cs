@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.IO.Compression;
 
-namespace McDevtools.Nbt {
+namespace McDevtools.NBT {
     public static class Decoder {
 
 

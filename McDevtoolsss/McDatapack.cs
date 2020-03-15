@@ -10,9 +10,6 @@ namespace McDevtools {
     public class McDatapack {
 
 
-        private static readonly string packmetafile = "{ \"pack\": { \"pack_format\": 4, \"description\": \"Hello\" }}";
-
-
         public static string GetDatapacksDirectoryPath(string save) => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + $"/.minecraft/saves/{save}/datapacks";
         public static DirectoryInfo GetDatapacksDirectory(string save) => new DirectoryInfo(GetDatapacksDirectoryPath(save));
 
@@ -44,7 +41,7 @@ namespace McDevtools {
             } else {
                 // init new:
                 var dir = Directory.CreateDirectory(Path);
-                File.WriteAllText(dir.FullName + "/pack.mcmeta", packmetafile);
+                File.WriteAllText(dir.FullName + "/pack.mcmeta", Templates.packmetafile);
                 dir.CreateSubdirectory("data");
             }
         }
@@ -63,7 +60,7 @@ namespace McDevtools {
 
         public static void InitDatapack(string save, string name) {
             var rootdir = Directory.CreateDirectory(GetDatapacksDirectoryPath(save) + $"/{name}");
-            File.WriteAllText(rootdir.FullName + "/pack.mcmeta", packmetafile);
+            File.WriteAllText(rootdir.FullName + "/pack.mcmeta", Templates.packmetafile);
 
             //var mctagsfuncs = rootdir.CreateSubdirectory("data/minecraft/tags/functions");
 
