@@ -6,45 +6,83 @@ using System.Threading.Tasks;
 
 using System.IO;
 
+/*
+ 
+    datapack folder structure
+
+    <datapack name> {
+        pack.mcmeta
+        data {
+            <namespace> {
+                functions {
+                    func.mcfunction
+                }
+                predicates {}
+
+            }
+        }
+    }
+*/
+
 namespace McDevtools {
     public class McDatapack {
 
 
-        private static readonly string packmetafile = "{ \"pack\": { \"pack_format\": 4, \"description\": \"Hello\" }}";
+        public readonly string name;
+        public readonly McSave savefile;
 
-
-        public static string GetDatapacksDirectoryPath(string save) => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + $"/.minecraft/saves/{save}/datapacks";
-        public static DirectoryInfo GetDatapacksDirectory(string save) => new DirectoryInfo(GetDatapacksDirectoryPath(save));
-
-
-        private readonly string Path;
-        private DirectoryInfo RootDir => new DirectoryInfo(Path);
-        private FileInfo PackMcMetaFile => new FileInfo(Path + "/pack.mcmeta");
-        private DirectoryInfo DataDir => new DirectoryInfo(Path + "/data");
+        public string path => savefile.path + "/datapacks/" + name;
 
         private readonly Dictionary<string, McNamespace> namespaces = new Dictionary<string, McNamespace>();
 
+        public Meta packmeta = new Meta { pack_format = 4, description = "" };
+
+        
+        
+        private DirectoryInfo RootDir => new DirectoryInfo(path);
+        private FileInfo PackMcMetaFile => new FileInfo(path + "/pack.mcmeta");
+        private DirectoryInfo DataDir => new DirectoryInfo(path + "/data");
 
 
-        public McDatapack(string save, string name) {
-            Path = GetDatapacksDirectoryPath(save) + $"/{name}";
+        public class Meta {
+            public int pack_format;
+            public string description;
 
-            if (Directory.Exists(Path)) {
-                // Parse:
-                var dir = new DirectoryInfo(Path);
+            public string GetAsJson() {
+                return "{ \"pack\": { \"pack_format\": " + pack_format + ", \"description\": \"" + description + "\" }}";
+            }
+        }
+
+
+        internal McDatapack(McSave save, string name) { 
+            savefile = save;
+            this.name = name;
+
+            init();
+        }
+
+        private void init() {
+            if (Directory.Exists(path)) {
+                var dir = new DirectoryInfo(path);
+                
+                // make sure data directory exists
                 var datadir = dir.GetDirectories("data", SearchOption.TopDirectoryOnly).FirstOrDefault();
                 if (datadir == null) {
                     datadir = dir.CreateSubdirectory("data");
                 }
 
+                // loop all namespaces in data dir
                 foreach (var nsdir in datadir.EnumerateDirectories("*", SearchOption.TopDirectoryOnly)) {
-                    namespaces.Add(nsdir.Name, new McNamespace(nsdir.FullName));
+                    namespaces.Add(nsdir.Name, new McNamespace(this, nsdir.Name));
                 }
 
+                // TODO: parse pack.mcmeta json file into packmeta
+
+
             } else {
-                // init new:
-                var dir = Directory.CreateDirectory(Path);
-                File.WriteAllText(dir.FullName + "/pack.mcmeta", packmetafile);
+                // init new
+                var dir = Directory.CreateDirectory(path);
+                File.WriteAllText(dir.FullName + "/pack.mcmeta", packmeta.GetAsJson());
                 dir.CreateSubdirectory("data");
             }
         }
@@ -54,19 +92,17 @@ namespace McDevtools {
             if(namespaces.ContainsKey(name)) {
                 return namespaces[name];
             } else {
-                var ns = new McNamespace(DataDir.CreateSubdirectory(name).FullName);
+                DataDir.CreateSubdirectory(name);
+                var ns = new McNamespace(this, name);
                 namespaces.Add(name, ns);
                 return ns;
             }
         }
 
 
-        public static void InitDatapack(string save, string name) {
-            var rootdir = Directory.CreateDirectory(GetDatapacksDirectoryPath(save) + $"/{name}");
-            File.WriteAllText(rootdir.FullName + "/pack.mcmeta", packmetafile);
-
+        
             //var mctagsfuncs = rootdir.CreateSubdirectory("data/minecraft/tags/functions");
 
-        }
+        
     }
 }

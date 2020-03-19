@@ -6,19 +6,67 @@ using System.Threading.Tasks;
 
 using System.IO;
 
+/*
+
+
+    namespace
+    ┣ advancements
+    ┃ ┗ *.json
+    ┣ functions
+    ┃ ┗ *.mcfunction
+    ┣ loot_tables
+    ┃ ┗ *.json
+    ┣ predicates
+    ┃ ┗ *.json
+    ┣ recipes
+    ┃ ┗ *.json
+    ┣ structures
+    ┃ ┗ *.nbt
+    ┗ tags
+
+ */
+
 namespace McDevtools {
+
+    /// <summary>
+    /// folder structure: <br />
+    /// 
+    /// namespace           <br />
+    /// ┣ advancements      <br />
+    /// ┃ ┗ *.json          <br />
+    /// ┣ functions         <br />
+    /// ┃ ┗ *.mcfunction    <br />
+    /// ┣ loot_tables       <br />
+    /// ┃ ┗ *.json          <br />
+    /// ┣ predicates        <br />
+    /// ┃ ┗ *.json          <br />
+    /// ┣ recipes           <br />
+    /// ┃ ┗ *.json          <br />
+    /// ┣ structures        <br />
+    /// ┃ ┗ *.nbt           <br />
+    /// ┗ tags              <br />
+    /// 
+    /// </summary>
     public class McNamespace {
 
-        private readonly string Path;
-        private DirectoryInfo Dir => new DirectoryInfo(Path);
-        private DirectoryInfo FuncsDir => new DirectoryInfo(Path + "/functions");
 
+        public readonly string name;
+        public readonly McDatapack datapack;
         private readonly Dictionary<string, McFunction> functions = new Dictionary<string, McFunction>();
+        
+        public string path => datapack.path + "/data/" + name;
 
 
-        public McNamespace(string path) {
-            Path = path;
-            if(!Directory.Exists(Path + "/functions")) {
+        private DirectoryInfo Dir => new DirectoryInfo(path);
+        private DirectoryInfo FuncsDir => new DirectoryInfo(path + "/functions");
+
+
+
+        internal McNamespace(McDatapack pack, string name) {
+            datapack = pack;
+            this.name = name;
+
+            if(!Directory.Exists(path + "/functions")) {
                 Dir.CreateSubdirectory("functions");
             }
             // TODO: parse exsisting files
@@ -36,7 +84,7 @@ namespace McDevtools {
                     d = FuncsDir.CreateSubdirectory(subdirs); // does this overwrite if the subdirs already exsist?
                 }
 
-                var f = new McFunction(d.FullName + $"/{name.Substring(i + 1)}.mcfunction");
+                var f = new McFunction(this, name); // d.FullName + $"/{name.Substring(i + 1)}.mcfunction");
                 functions.Add(name, f);
                 return f;
             }

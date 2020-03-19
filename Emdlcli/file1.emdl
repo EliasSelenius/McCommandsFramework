@@ -1,23 +1,45 @@
 ﻿
+namespace something {
 
-namespace emdl-functions-test {
-	
-	function printhelloworld {
-		/say hello world again
-	
-		/function test:call-me
+	function recursive-test {
+
+		/execute if score 
+
+		/say before
+		/function something:recursive-test
+		/say after
 	}
 
-	function call-me {
-		/say am callEDDA!!^&*
+	function explode {
+		/summon tnt ~ ~ ~
+		
+		/execute if predicate run function ns:test-func
+
+		if (predicate) {
+		
+		}
+
 	}
 
-}
+	function start {
+		/execute as @e[tag=wow] at @e[tag=wow] run function dlawpdk:dawd
 
-namespace another_test {
-	function hello-world {
-		/say Hello World
+		foreach @e[tag=wow] {
 		
+		}
 		
+
+
+
+		ref allEntities = @e[type=!player]
+
+		/tag @e[type=!player] add allEntities
+		
+
+		foreach entity in allEntities {
+			/say @s
+		}
+
+		/execute as @e[tag=allEntities] run say @s
 	}
 }

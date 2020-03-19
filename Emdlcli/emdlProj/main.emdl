@@ -1,0 +1,9 @@
+﻿
+namespace planet-generator {
+	function generate {
+
+		/fill ~-10 ~-10 ~-10 ~10 ~10 ~10 stone hollow
+
+	}
+
+}

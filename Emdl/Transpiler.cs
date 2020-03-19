@@ -14,7 +14,7 @@ namespace Emdl {
             Lexrules.Whitespace,
             new Lexrule("function", "function"),
             new Lexrule("namespace", "namespace"),
-            new Lexrule("identifier", "[a-z\\-_0-9]+"),
+            new Lexrule("identifier", "[a-z0-9_-][a-z\\-_0-9]+"),
             new Lexrule("closeCurl", "}"),
             new Lexrule("openCurl", "{"),
             new Lexrule("primitiveCall", "/.*?\\n")

@@ -12,11 +12,16 @@ using Nums;
 using McDevtools.Nbt;
 
 namespace McDevtools {
+
+
+    /// <summary>
+    /// Represents some structure built of minecraft blocks.
+    /// </summary>
     public class VoxelGeometry {
 
         public const string DefaultBlock = "minecraft:stone";
 
-        public Dictionary<string, List<vec3>> Voxels = new Dictionary<string, List<vec3>>();
+        public readonly Dictionary<string, List<vec3>> Voxels = new Dictionary<string, List<vec3>>();
 
         public float Scaler = 1;
 
@@ -29,18 +34,22 @@ namespace McDevtools {
 
         public static VoxelGeometry FromStructureNBT(NamedTag nbt) {
             var res = new VoxelGeometry();
-
+            
             var c = (nbt.Payload as Compound);
-            var pallete = c["pallete"];
+            
+            var pallete = (c["palette"] as List<object>).Select(x => (x as Nbt.Compound)["Name"] as string).ToArray();
+            
             var blocks = c["blocks"] as List<object>;
             foreach (var item in blocks) {
                 var i = item as Compound;
                 var nbtpos = i["pos"] as List<object>;
                 var pos = new vec3((int)nbtpos[0], (int)nbtpos[1], (int)nbtpos[2]);
-                var state = i["state"] as int?;
-                if (state == 0) {
-                    res.AddVoxel(DefaultBlock, pos);
-                }
+                var state = (int)i["state"];
+
+                var block = pallete[state];
+                if (!block.Equals("minecraft:air"))
+                    res.AddVoxel(pallete[state], pos);
+                
             }
 
             return res;

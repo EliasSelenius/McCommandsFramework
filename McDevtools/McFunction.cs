@@ -8,21 +8,26 @@ using System.IO;
 
 namespace McDevtools {
     public class McFunction {
-        private readonly string filepath;
 
-        public McFunction(string path) {
-            filepath = path;
+        public readonly string name;
+        public readonly McNamespace mcNamespace;
+
+        public string path => mcNamespace.path + "/functions/" + name + ".mcfunction";
+
+        internal McFunction(McNamespace ns, string name) {
+            mcNamespace = ns;
+            this.name = name;
         }
 
 
-        public void Overwrite(string newcontent) => File.WriteAllText(filepath, newcontent);
-        public void Overwrite(IEnumerable<string> lines) => File.WriteAllLines(filepath, lines);
+        public void Overwrite(string newcontent) => File.WriteAllText(path, newcontent);
+        public void Overwrite(IEnumerable<string> lines) => File.WriteAllLines(path, lines);
 
-        public void Append(string content) => File.AppendAllText(filepath, content);
-        public void Append(IEnumerable<string> lines) => File.AppendAllLines(filepath, lines);
+        public void Append(string content) => File.AppendAllText(path, content);
+        public void Append(IEnumerable<string> lines) => File.AppendAllLines(path, lines);
 
         public void AppendLine(string content) => Append(content + "\n");
 
-        public void Clear() => File.WriteAllText(filepath, "");
+        public void Clear() => File.WriteAllText(path, "");
     }
 }

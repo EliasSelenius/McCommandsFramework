@@ -7,9 +7,15 @@ namespace Emdlcli {
     class Program {
         static void Main(string[] args) {
 
-            var dp = new McDatapack("Void", "emdltest");
+            var save = new McSave("Void");
 
-            Transpiler.Transpile(dp, System.IO.File.ReadAllText("file1.emdl"));
+            var dp = save.Datapack("planet-generator");
+
+            save.Structure("bigtest").RegisterAt(dp, "hahatest");
+
+
+            var project = new EmdlProject("emdlProj/", dp);
+            project.Build();
 
             Console.WriteLine("Hello World!");
         }
