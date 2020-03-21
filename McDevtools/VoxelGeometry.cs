@@ -23,7 +23,7 @@ namespace McDevtools {
 
         public readonly Dictionary<string, List<vec3>> Voxels = new Dictionary<string, List<vec3>>();
 
-        public float Scaler = 1;
+        public const float armor_stand_scaler = 0.625f;
 
         public void AddVoxel(string block, vec3 pos) {
             if (!Voxels.ContainsKey(block)) {
@@ -192,9 +192,9 @@ namespace McDevtools {
 
             foreach (var kv in Voxels) {
                 for (int i = 0; i < kv.Value.Count; i++) {
-                    var pos = kv.Value[i] * Scaler;
+                    var pos = kv.Value[i] * armor_stand_scaler;
                     var postag = $"{name}_child_{pos.x}_{pos.y}_{pos.z}";
-                    sf.AppendLine($"summon minecraft:armor_stand ~{pos.x} ~{pos.y} ~{pos.z} {{Tags:[\"{postag}\"],ArmorItems: [{{}},{{}},{{}},{{id:\"{kv.Key}\", Count:1}}],Invisible:1b}}");
+                    sf.AppendLine($"summon minecraft:armor_stand ~{pos.x} ~{pos.y} ~{pos.z} {{Tags:[\"{postag}\",\"{name}_child\"],ArmorItems: [{{}},{{}},{{}},{{id:\"{kv.Key}\", Count:1}}],Invisible:1b}}");
                     uf.AppendLine($"teleport @e[tag={postag}] ^{pos.x} ^{pos.y} ^{pos.z} ~ ~");
                     kf.AppendLine($"kill @e[tag={postag}]");
                 }

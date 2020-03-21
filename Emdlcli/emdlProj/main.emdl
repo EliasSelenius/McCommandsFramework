@@ -1,8 +1,25 @@
 ﻿
 namespace planet-generator {
+	
+	
 	function generate {
 
-		/fill ~-10 ~-10 ~-10 ~10 ~10 ~10 stone hollow
+		
+
+		/fill ~-10 ~-10 ~-10 ~10 ~10 ~10 stone hollow 
+	}
+
+
+	predicate test-pred {
+		wow: "hello world",
+		gog: "no",
+		subcomp: {
+			foo: "",
+			i: "no ones fool"
+		},
+		my-list: [
+			"ass", "tits", [{},{},["google", "yahoo"]]
+		]
 
 	}
 
