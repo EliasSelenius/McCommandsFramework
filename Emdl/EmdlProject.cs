@@ -25,7 +25,10 @@ namespace Emdl {
         /// </summary>
         public void Build() {
             foreach (var item in Directory.GetFiles(Path, "*.emdl", SearchOption.AllDirectories)) {
-                Transpiler.Transpile(output, File.ReadAllText(item));
+                //Transpiler.Transpile(output, File.ReadAllText(item));
+
+                EmdlParser.Parse(File.ReadAllText(item), output);
+
             }
         }
     

@@ -11,18 +11,11 @@ namespace Emdlcli {
 
             var save = new McSave("Void");
 
-            var dp = save.Datapack("planet-generator");
+            var name = new System.IO.DirectoryInfo(".").Name;
+            var dp = save.Datapack(name);
+            dp.Clear();
 
-            {
-                var f = save.Structure("bigtest1");
-                f.Offset(new vec3(0, 0, 32));
-                var boat = save.Structure("bigtest0").Merge(f);
-                boat.Offset(new vec3(-5, 0, -20));
-                boat.RegisterAt(dp, "wow");
-            }
-
-
-            var project = new EmdlProject("emdlProj/", dp);
+            var project = new EmdlProject(".", dp);
             project.Build();
 
             Console.WriteLine("Hello World!");

@@ -81,10 +81,17 @@ namespace McDevtools {
 
             } else {
                 // init new
-                var dir = Directory.CreateDirectory(path);
-                File.WriteAllText(dir.FullName + "/pack.mcmeta", packmeta.GetAsJson());
-                dir.CreateSubdirectory("data");
+                Directory.CreateDirectory(path);
+                createInitialFolderState();
             }
+        }
+
+        /// <summary>
+        /// creates a pack.mcmeta file and data directory. (the initial Folder state of a datapack)
+        /// </summary>
+        private void createInitialFolderState() {
+            File.WriteAllText(RootDir.FullName + "/pack.mcmeta", packmeta.GetAsJson());
+            RootDir.CreateSubdirectory("data");
         }
 
 
@@ -99,7 +106,12 @@ namespace McDevtools {
             }
         }
 
+        public void Clear() {
+            DataDir.Delete(true);
+            namespaces.Clear();
 
+            createInitialFolderState();
+        }
         
             //var mctagsfuncs = rootdir.CreateSubdirectory("data/minecraft/tags/functions");
 

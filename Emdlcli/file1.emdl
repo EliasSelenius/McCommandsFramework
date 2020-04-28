@@ -1,45 +1,22 @@
 ﻿
-namespace something {
+namespace test {
+	function hello {
+		/say hello
+		/setblock ~ ~ ~ minecraft:dirt
 
-	function recursive-test {
+		if my-predicate {
+			/tp @s @e[limit=1]
 
-		/execute if score 
-
-		/say before
-		/function something:recursive-test
-		/say after
-	}
-
-	function explode {
-		/summon tnt ~ ~ ~
-		
-		/execute if predicate run function ns:test-func
-
-		if (predicate) {
-		
+			if ass {
+				/wow
+				if dwad {
+				}
+			}
 		}
 
 	}
 
-	function start {
-		/execute as @e[tag=wow] at @e[tag=wow] run function dlawpdk:dawd
-
-		foreach @e[tag=wow] {
+	function process-data {
 		
-		}
-		
-
-
-
-		ref allEntities = @e[type=!player]
-
-		/tag @e[type=!player] add allEntities
-		
-
-		foreach entity in allEntities {
-			/say @s
-		}
-
-		/execute as @e[tag=allEntities] run say @s
 	}
 }

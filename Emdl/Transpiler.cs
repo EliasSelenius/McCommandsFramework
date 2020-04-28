@@ -12,35 +12,51 @@ namespace Emdl {
 
         public static readonly Lexer lexer = new Lexer(
             Lexrules.Whitespace,
+            
             Lexrules.String,
+            new Lexrule("range", "\\d+\\.\\.\\d+"),
+            Lexrules.Number,
+
             new Lexrule("function", "function"),
             new Lexrule("namespace", "namespace"),
             new Lexrule("predicate", "predicate"),
+            new Lexrule("identifier", "[A-Za-z0-9_-]+"),
+
             new Lexrule("colon", ":"),
             new Lexrule("comma", ","),
-            new Lexrule("identifier", "[A-Za-z0-9_-]+"),
             new Lexrule("openSqbr", "\\["),
             new Lexrule("closeSqbr", "\\]"),
             new Lexrule("openCurl", "{"),
             new Lexrule("closeCurl", "}"),
-            new Lexrule("primitiveCall", "/.*?\\n")
+
+            new Lexrule("line_comment", false, "//.*?$", System.Text.RegularExpressions.RegexOptions.Multiline),
+            new Lexrule("block_comment", false, "/\\*.*?\\*/", System.Text.RegularExpressions.RegexOptions.Singleline),
+            
+            new Lexrule("primitiveCall", "^/[^/].*?\\n"),
+            new Lexrule("loop", "for|foreach|while")
+            
+
             );
 
         public static void Transpile(McDatapack datapack, string source) {
 
             var whitespace = Lexrules.Whitespace;
             var string_rule = Lexrules.String;
+            var range = lexer.GetRule("range");
             var function = lexer.GetRule("function");
             var namespace_rule = lexer.GetRule("namespace");
             var predicate = lexer.GetRule("predicate");
             var colon = lexer.GetRule("colon");
             var comma = lexer.GetRule("comma");
+            var line_comment = lexer.GetRule("line_comment");
+            var block_comment = lexer.GetRule("block_comment");
             var identifier = lexer.GetRule("identifier");
             var openSqbr = lexer.GetRule("openSqbr");
             var closeSqbr = lexer.GetRule("closeSqbr");
             var openCurl = lexer.GetRule("openCurl");
             var closeCurl = lexer.GetRule("closeCurl");
             var primitiveCall = lexer.GetRule("primitiveCall");
+            var loop = lexer.GetRule("loop");
 
             var tokens = lexer.Lex(source);
             var reader = new TokenReader(tokens);
@@ -59,11 +75,18 @@ namespace Emdl {
                     var t = reader.Next();
                     if (t.type == closeCurl) break;
                     if (t.type == whitespace) continue;
+                    if (t.type == line_comment) continue;
+                    if (t.type == block_comment) continue;
 
 
                     if (t.type == primitiveCall) {
                         func.Append(t.value.Substring(1));
                         continue;
+                    }
+
+
+                    if (t.type == loop) {
+                        
                     }
 
                     throw new ParserException(t.type.name + " was not handled");

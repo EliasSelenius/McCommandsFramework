@@ -11,6 +11,7 @@ namespace McDevtools {
 
         public readonly string name;
         public readonly McNamespace mcNamespace;
+        public McDatapack mcDatapack => mcNamespace.datapack;
 
         public string path => mcNamespace.path + "/functions/" + name + ".mcfunction";
 
