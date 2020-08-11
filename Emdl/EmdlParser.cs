@@ -4,22 +4,151 @@ using System.Text;
 
 using Pgen;
 using McDevtools;
+using McDevtools.Nbt;
 
 namespace Emdl {
     public class EmdlParser : Parser {
 
-        private static readonly EmdlParser singelton;
+        public static readonly EmdlParser instance;
 
-        private const double scorefloatmultiplyer = 10000;
+        public const int scoredecimalPlaces = 4;
+        public static double nbt2score => Math.Pow(10, scoredecimalPlaces);
+        public static double score2nbt => 1 / nbt2score;
 
         static EmdlParser() {
-            singelton = new EmdlParser();
+            instance = new EmdlParser();
         }
 
         private EmdlParser() { }
 
+
+
+#pragma warning disable IDE0051 // Remove unused private members
+
+        #region Tokens
+        // Tokens
+        [Rule("\\s+"), Skip] public Lexrule whitespace;
+        [Rule(":")] public Lexrule colon;
+        [Rule(",")] public Lexrule comma;
+        [Rule("\\.")] public Lexrule punct;
+        [Rule("{")] public Lexrule opencurl;
+        [Rule("}")] public Lexrule closecurl;
+        [Rule("\\[")] public Lexrule opensq;
+        [Rule("\\]")] public Lexrule closesq;
+        [Rule("\\(")] public Lexrule openbrack;
+        [Rule("\\)")] public Lexrule closebrack;
+        [Rule("#")] public Lexrule hash;
+
+        // datatypes
+        [Rule("entity")] public Lexrule datatype_entity;
+        [Rule("nbt")] public Lexrule datatype_nbt;
+        [Rule("int")] public Lexrule datatype_int;
+        [Rule("float")] public Lexrule datatype_float;
+
+        // comments
+        [Rule("//.*?\\n"), Skip] public Lexrule line_comment;
+        [Rule("/\\*(?:.*?\\n?)*\\*/"), Skip] public Lexrule block_comment;
+
+        // boolean operations
+        [Rule("<=", true)] public Lexrule lteq;
+        [Rule(">=", true)] public Lexrule gteq;
+        [Rule("<", true)] public Lexrule lt;
+        [Rule(">", true)] public Lexrule gt;
+        [Rule("==", true)] public Lexrule iseq;
+
+        [Rule("=")] public Lexrule eq;
+        [Rule("\\+", true)] public Lexrule plus;
+        [Rule("-", true)] public Lexrule minus;
+        [Rule("\\*", true)] public Lexrule mult;
+        [Rule("/", true)] public Lexrule div;
+
+
+
+        // values
+        [Rule("(?:\"\")|(?:\".*?[^\\\\]\")", true)] public Lexrule @string;
+        [Rule("(?:\\d+\\.\\.\\d+)", true)] public Lexrule range;
+        [Rule("-?\\d+(?:\\.\\d+)?", true)] public Lexrule number;
+        [Rule("true|false", true)] public Lexrule boolean;
+
+
+        [Rule("public", createNode: true)] public Lexrule accessmodifier;
+
+        [Rule("[a-z0-9_-]+", true)] public Lexrule identifier;
+
+        [Rule("^\\$.*?\\n", true)] public Lexrule primitivecall;
+
+        #endregion
+
+        // parse rules
+        [Rule("namespace*")] public Parserule main;
+
+        [Rule("identifier colon identifier | identifier", createNode: true)] public Parserule namespacedid;
+        [Rule("hash namespacedid", createNode: true)] public Parserule tag;
+        [Rule("identifier subpath*", createNode: true)] public Parserule path;
+        [Rule("punct identifier | opensq number closesq")] public Parserule subpath;
+
+        [Rule("'namespace' identifier opencurl programentity* closecurl", createNode: true)] public Parserule @namespace;
+
+
+        // Program entities. e.g function, predicate
+        [Rule("function | predicate")] public Parserule programentity;
+        [Rule("tag* accessmodifier? 'function' identifier opencurl statement* closecurl", createNode: true)] public Parserule function;
+        [Rule("'predicate' identifier compund", createNode: true)] public Parserule predicate;
+
+
+        // Statements. e.g if, while, ...
+        [Rule("primitivecall | ifblock | whileblock | assigment | declaration")] public Parserule statement;
+        [Rule("'if' condition opencurl statement* closecurl", createNode: true)] public Parserule ifblock;
+        [Rule("'while' condition opencurl statement* closecurl", createNode: true)] public Parserule whileblock;
+
+        // conditions
+        [Rule("iseq | lteq | gteq | lt | gt")] public Parserule bool_op;
+        [Rule("identifier | number")] public Parserule bool_expr_entity;
+        [Rule("bool_expr_entity bool_op bool_expr_entity", createNode: true)] public Parserule bool_expression;
+        [Rule("bool_expression | namespacedid", createNode: true)] public Parserule condition;
+
+
+        // declaration
+        [Rule("datatype_entity | datatype_nbt | datatype_int | datatype_float")] public Parserule datatype;
+        [Rule("nbt_declaration | int_declaration | float_declaration")] public Parserule declaration;
+        [Rule("datatype_nbt identifier eq value | datatype_nbt identifier eq path", createNode: true)] public Parserule nbt_declaration;
+
+        [Rule("datatype_int identifier eq number_value", createNode: true)] public Parserule int_declaration;
+        [Rule("datatype_float identifier eq number_value", createNode: true)] public Parserule float_declaration;
+        [Rule("path | expression")] public Parserule number_value;
+
+        // assigments
+        [Rule("path sub_assig", createNode: true)] public Parserule assigment;
+        [Rule("eq expression | eq value | eq path")] Parserule sub_assig;
+
+        // aritmetic expression
+        [Rule("plus | minus | mult | div")] public Parserule arith_op;
+        [Rule("expr", createNode: true)] public Parserule expression;
+        [Rule("expr_entity sub_expr* | openbrack expression closebrack")] public Parserule expr;
+        [Rule("number | identifier")] public Parserule expr_entity;
+        [Rule("arith_op expr")] public Parserule sub_expr;
+
+
+        // NBT & JSON
+        [Rule("number | boolean | string | compund | list")] public Parserule value;
+
+        // compund:
+        [Rule("opencurl compund_item* keyvaluepair closecurl | opencurl closecurl", createNode: true)] public Parserule compund;
+        [Rule("keyvaluepair comma")] public Parserule compund_item;
+        [Rule("identifier colon value", createNode: true)] public Parserule keyvaluepair;
+
+        // list
+        [Rule("opensq list_item* value closesq | opensq closesq", createNode: true)] public Parserule list;
+        [Rule("value comma")] public Parserule list_item;
+
+
+
+#pragma warning restore IDE0051 // Remove unused private members
+
+
+
         public static void Parse(string sourceCode, McDatapack datapack) {
-            var syntaxTree = singelton.Parse(sourceCode);
+            var syntaxTree = instance.Parse(sourceCode);
             Console.WriteLine(syntaxTree.AsText());
 
             for (int i = 0; i < syntaxTree.rootNode.childCount; i++) {
@@ -36,17 +165,33 @@ namespace Emdl {
             for (int i = 1; i < namespace_node.childCount; i++) {
                 var n = namespace_node.GetChild(i);
 
-                if (n.rule == singelton.function) createFunction(mcns, n);
-                else if (n.rule == singelton.predicate) createPredicate(mcns, n);
+                if (n.rule == instance.function) createFunction(mcns, n);
+                else if (n.rule == instance.predicate) createPredicate(mcns, n);
                 else throw new ParserException(n.rule.name + " was not expected here");
             }
 
         }
 
         static void createFunction(McNamespace mcns, SyntaxTree.Node function_node) {
-            var name = function_node.GetChild(0).content;
+
+            var name = "private/";
+            var index = 0;
+            while (true) {
+                var n = function_node.GetChild(index);
+                if (n.rule == instance.accessmodifier) {
+                    name = "";
+                } else if (n.rule == instance.tag) {
+                    
+
+                } else if (n.rule == instance.identifier) {
+                    name += n.content;
+                    break;
+                }
+                index++;
+            }
+
             var scope = new EmdlScope(null, mcns.Function(name));
-            loopStatements(scope, function_node);
+            scope.loopStatements(function_node, index);
         }
 
         static void createPredicate(McNamespace mcns, SyntaxTree.Node predicate_node) {
@@ -54,112 +199,22 @@ namespace Emdl {
             var compund_node = predicate_node.GetChild(1);
         }
 
-        static void loopStatements(EmdlScope scope, SyntaxTree.Node function_node) {
-            scope.Overwrite("# transpiled from emdl\n");
 
-            for (int i = 1; i < function_node.childCount; i++) {
-                var n = function_node.GetChild(i);
-                createStatement(scope, n);
-            }
-        }
-
-        static void createStatement(EmdlScope scope, SyntaxTree.Node statment_node) {
-            if (statment_node.rule == singelton.primitivecall) scope.AppendLine(statment_node.content.Substring(1));
-            else if (statment_node.rule == singelton.ifblock) {
-                var block = createBlock("if", scope, statment_node);
-                scope.AppendLine("execute " + createCondition(scope, statment_node.GetChild(0)) + " run function " + scope.mcNamespace.name + ":" + block.name);
-            } else if (statment_node.rule == singelton.whileblock) {
-                var block = createBlock("while", scope, statment_node);
-                var command = "execute " + createCondition(scope, statment_node.GetChild(0)) + " run function " + scope.mcNamespace.name + ":" + block.name;
-                scope.AppendLine(command);
-                block.AppendLine(command);
-            } else if (statment_node.rule == singelton.assigment) createAssigment(scope, statment_node);
-        }
-
-        static void createAssigment(EmdlScope scope, SyntaxTree.Node assigment_node) {
-
-            /*
-                scenarios:
-                    assignment from constant:
-                        score:
-                            x = 10
-                        nbt:
-                            foo.x = 10
-                            foo = {x:10}
-                    assignment from variable:
-                        score:
-                            x = foo.x // if foo.x is a numeric or boolean value
-                        nbt:
-                            foo.x = bar
-                            x = foo.x // if foo.x is anything but a numeric or boolean value
-
-             */
-
-
-            var localname = getPath(assigment_node.GetChild(0));
-            var localname_ispath = localname.Contains(".") || localname.Contains("[");
-            var value_node = assigment_node.GetChild(1);
-            var storagename = "emdl-locals:" + scope.mcNamespace.name + "/" + scope.name;
-
-            if (value_node.rule == singelton.path) {
-                // assignment from variable
-                var value_path = getPath(value_node);
-                var value_type = scope.getLocal(value_path) ?? throw new Exception(value_path + " does not exist in the current context");
-               
-                if (!localname_ispath && value_type == EmdlDataType.NumericOrBoolean) {
-                    // score
-                } else {
-                    // nbt
-                    //data modify storage wow:test rot set from storage wow:test dwa_dw
-                    scope.AppendLine("data modify storage " + storagename + " " + localname + " set from storage " + storagename + " " + value_path);
-                    scope.setLocal(localname, EmdlDataType.Nbt);
-                }
-
-            } else {
-                // assignment from constant
-                if (!localname_ispath && (value_node.rule == singelton.number)) {
-                    // score
-                    var scorename = "emdl_" + scope.mcNamespace.name + "_" + scope.name + "_" + localname;
-                    scope.AppendLine("scoreboard players set " + scorename + " number " + (int)(double.Parse(value_node.content) * scorefloatmultiplyer));
-                    scope.setLocal(localname, EmdlDataType.NumericOrBoolean);
-                } else {
-                    // nbt
-                    scope.AppendLine("data modify storage " + storagename + " " + localname + " set value " + createValueAsText(value_node));
-                    scope.setLocal(localname, EmdlDataType.Nbt);
-                }
-            }
-             
-
-            //data modify storage emdl-locals:haha/test data set value {my-numbers:[1,2,3,6,7]}
-        }
-
-       
-
-        static EmdlScope createBlock(string name, EmdlScope scope, SyntaxTree.Node block_node) {
-            var block = scope.mcNamespace.Function(name + "_" + System.IO.Path.GetRandomFileName().Replace(".", ""));
-            var innerscope = new EmdlScope(scope, block);
-            loopStatements(innerscope, block_node);
-            return innerscope;
-        }
-
-        static string getPath(SyntaxTree.Node path_node) {
+        internal static string getPath(SyntaxTree.Node path_node) {
             var res = "";
             for (int i = 0; i < path_node.childCount; i++) {
                 var c = path_node.GetChild(i);
                 var co = c.content;
-                if (c.rule == singelton.number) res += "[" + co + "]";
+                if (c.rule == instance.number) res += "[" + co + "]";
                 else res += "." + co;
             }
             return res.Substring(1);
         }
 
-        static string getNamespacedId(McNamespace mcns, SyntaxTree.Node node) {
-            if (node.childCount == 2) return node.GetChild(0).content + ":" + node.GetChild(1).content;
-            return mcns.name + ":" + node.GetChild(0).content;
-        }
+        
 
-        static string createValueAsText(SyntaxTree.Node value_node) {
-            if (value_node.rule == singelton.compund) {
+        internal static string createValueAsText(SyntaxTree.Node value_node) {
+            if (value_node.rule == instance.compund) {
                 var res = "{";
                 for (int i = 0; i < value_node.childCount; i++) {
                     var kv = value_node.GetChild(i);
@@ -168,7 +223,7 @@ namespace Emdl {
                 return res.Substring(0, res.Length - 1) + "}";
             }
 
-            if (value_node.rule == singelton.list) {
+            if (value_node.rule == instance.list) {
                 var res = "";
                 for (int i = 0; i < value_node.childCount; i++) {
                     res += ", " + createValueAsText(value_node.GetChild(i));
@@ -179,94 +234,11 @@ namespace Emdl {
             return value_node.content;
         }
 
-        static string createCondition(EmdlScope scope, SyntaxTree.Node condition_node) {
-            if (condition_node.childCount == 1) {
-                var first = condition_node.GetChild(0);
-                if (first.rule == singelton.namespacedid) {
-                    return "if predicate " + getNamespacedId(scope.mcNamespace, first);
-                }
-            }
-
-            throw new ParserException("failed to parse condition statement");
-        }
+        
 
 
         #endregion
 
-
-#pragma warning disable IDE0051 // Remove unused private members
-
-        // Tokens
-        [Rule("\\s+"), Skip] Lexrule whitespace;
-        [Rule(":")] Lexrule colon;
-        [Rule(",")] Lexrule comma;
-        [Rule("\\.")] Lexrule punct;
-        [Rule("{")] Lexrule opencurl;
-        [Rule("}")] Lexrule closecurl;
-        [Rule("\\[")] Lexrule opensq;
-        [Rule("\\]")] Lexrule closesq;
-        [Rule("<=")] Lexrule lteq;
-        [Rule(">=")] Lexrule gteq;
-        [Rule("=")] Lexrule eq;
-        [Rule("<")] Lexrule lt;
-        [Rule(">")] Lexrule gt;
-
-
-        // values
-        [Rule("(?:\"\")|(?:\".*?[^\\\\]\")", true)] Lexrule @string;
-        [Rule("(?:\\d+\\.\\.\\d+)", true)] Lexrule range;
-        [Rule("-?\\d+(?:\\.\\d+)?", true)] Lexrule number;
-        [Rule("true|false", true)] Lexrule boolean;
-
-        // comments
-        [Rule("//.*?\\n"), Skip] Lexrule line_comment;
-        [Rule("/\\*(?:.*?\\n?)*\\*/"), Skip] Lexrule block_comment;
-
-        [Rule("[a-z0-9_-]+", true)] Lexrule identifier;
-
-        [Rule("^/.*?\\n", true)] Lexrule primitivecall;
-
-        [Rule("namespace*")] Parserule main;
-
-        [Rule("identifier colon identifier | identifier", createNode:true)] Parserule namespacedid;
-        [Rule("identifier subpath*",createNode:true)] Parserule path;
-        [Rule("punct identifier | opensq number closesq")] Parserule subpath;
-
-        [Rule("'namespace' identifier opencurl programentity* closecurl", createNode: true)] Parserule @namespace;
-
-        // Program entities. e.g function, predicate
-        [Rule("function | predicate")] Parserule programentity;
-        [Rule("'function' identifier opencurl statement* closecurl", createNode: true)] Parserule function;
-        [Rule("'predicate' identifier compund", createNode:true)] Parserule predicate;
-
-
-        // Statements. e.g if, while, ...
-        [Rule("primitivecall | ifblock | whileblock | assigment")] Parserule statement;
-        [Rule("'if' condition opencurl statement* closecurl", createNode:true)] Parserule ifblock;
-        [Rule("'while' condition opencurl statement* closecurl", createNode: true)] Parserule whileblock;
-
-        [Rule("namespacedid", createNode:true)] Parserule condition;
-
-        // assigments
-        [Rule("path eq value | path eq path",createNode:true)] Parserule assigment;
-
-
-
-        // NBT & JSON
-        [Rule("number | boolean | string | compund | list")] Parserule value;
-        
-        // compund:
-        [Rule("opencurl compund_item* keyvaluepair closecurl | opencurl closecurl", createNode: true)] Parserule compund;
-        [Rule("keyvaluepair comma")] Parserule compund_item;
-        [Rule("identifier colon value", createNode:true)] Parserule keyvaluepair;
-
-        // list
-        [Rule("opensq list_item* value closesq | opensq closesq", createNode:true)] Parserule list;
-        [Rule("value comma")] Parserule list_item;
-
-
-
-#pragma warning restore IDE0051 // Remove unused private members
 
 
     }
